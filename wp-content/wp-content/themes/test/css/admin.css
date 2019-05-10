@@ -1,25 +1,80 @@
+.setting-section-data {
+  padding-left: 13%;
+  width: 100%;
+  max-width: 800px;
+}
 .drophere {
   float: left;
-  margin-left: 100px;
-  width: 1000px;
+  width: 100%;
   height: 100px;
-  border: 1px solid red;
+  border: 1px solid #ccc;
+  border-bottom: 0px;
   padding: 5px;
+}
+.drophere:last-child {
+  border-bottom:1px solid #ccc; 
 }
 
 .draghere {
   width: 100%;
   height: 100px;
-  background: green;
+ background: #3093ca;
   text-align: center;
   line-height: 100px;
   color: #fff;
+  font-weight: bold;
+  letter-spacing: 1px;
+  font-size: 16px;
+
 }
 .ui-draggable-dragging {
-  background: blue;
+  background: #0073aa;
 }
 
 .hoverClass {
-  border: 2px solid red;
-  background: black;
+  border: 1px solid #3093ca;
+  background: #ccc;
+}
+#save_settings {
+  border-color: #008ec2;
+  background: #00a0d2;
+  color: #fff;
+   border: 1px solid #00a0d2;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-shadow: none;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: normal;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  width: 100%;
+  max-width:50px;
+  text-align: center;
+}
+#save_settings:hover {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #f7f7f7;
+  color: #00a0d2;
+}
+.product-settings,.simple-text-1-settings,.simple-text-1-settings,.save-btn {
+  width: 100%;
+  float: left;
+  padding: 40px 0 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.setting-label {
+  width: 100%;
+  max-width: 220px;
+}
+.setting-data {
+  width: 60%;
+}
+.setting-data textarea {
+  min-height: 100px;
+  width: 80%;
 }

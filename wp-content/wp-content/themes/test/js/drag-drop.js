@@ -54,6 +54,9 @@ jQuery(document).ready(function ($) {
     if(product_display == '') {
       $('.product-settings').append('<span class="error-msg">Please enter number of product display per row.');
       error = 'yes';
+    } else if(product_display < 1) {
+      $('.product-settings').append('<span class="error-msg">Please enter number more than 0.');
+      error = 'yes';
     }
 
     if(simple_text_1 == '') {
@@ -79,8 +82,14 @@ jQuery(document).ready(function ($) {
           simple_text_2 : simple_text_2
         },
         success: function(response) {
+          $('#setting-error-settings_updated').html('<p><strong>Settings saved.</strong></p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button>');
+          $('#setting-error-settings_updated').show();
         }
       });
     }
+  });
+
+  $(document).on('click', '.notice-dismiss', function(){
+    $('#setting-error-settings_updated').hide();
   });
 });

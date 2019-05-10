@@ -34,13 +34,13 @@ get_header();
 				}
 			}
 
-			$chartpage_01 = '<div style="width:75%;"><canvas id="chartpage_01_chart"></canvas></div>';
-			$chartpage_02 = '<div style="width:75%;"><canvas id="chartpage_02_chart"></canvas></div>';
-			$chartpage_03 = '<div style="width:75%;"><canvas id="chartpage_03_chart"></canvas></div>';
+			$chartpage_01 = '<div style="width:100%;"><canvas id="chartpage_01_chart"></canvas></div>';
+			$chartpage_02 = '<div style="width:100%;"><canvas id="chartpage_02_chart"></canvas></div>';
+			$chartpage_03 = '<div style="width:100%;"><canvas id="chartpage_03_chart"></canvas></div>';
 			$simpletext_01 = $home_page_settings['simple_text_1'];
 			$simpletext_02 = $home_page_settings['simple_text_2'];
-			$productpage_01 = '<div class="products">ProductPage 01</div>';
-			$productpage_02 = '<div class="products">ProductPage 02</div>';
+			$productpage_01 = '<div class="products">'. do_shortcode('[products per_page="'. $home_page_settings['product_display'] .'"]') .'</div>';
+			$productpage_02 = '<div class="products">'. do_shortcode('[products_offset per_page="'. $home_page_settings['product_display'] .'" offset="'. $home_page_settings['product_display'] .'"]') .'</div>';
 			$sections = array(
 				'chartpage_01' => '<div class="page-section" id="chartpage_01">' . $chartpage_01 . '</div>',
 				'chartpage_02' => '<div class="page-section" id="chartpage_02">' . $chartpage_02 . '</div>',

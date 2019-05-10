@@ -88,7 +88,7 @@ function home_page_settings_func() {
 			),
 			'product_display' => 3,
 			'simple_text_1' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
-			'simple_text_2' => 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using Content here, content here, making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for lorem ipsum will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like). '
+			'simple_text_2' => 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using Content here, content here, making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for lorem ipsum will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).'
 		);
 		update_option('home_page_settings', $home_page_settings);
 	}
@@ -111,30 +111,41 @@ function home_page_settings_func() {
 	?>
 	<div class="wrap">
 		<h1>Home page Settings</h1>
+		<div id="setting-error-settings_updated" class="updated settings-error notice is-dismissible" style="display: none;"></div>
 		<div class="sections-settings">
-			<h3>Sections Oders</h3>
-			<?php 
-			foreach ($home_page_settings['sections_settings'] as $sections_s) {
-				echo '<div class="drophere section-order">';
-					echo $sections[$sections_s];
-				echo '</div>';
-			}
-			?>
+			<div class="setting-label"><h3>Sections Oders</h3></div>
+			<div class="setting-section-data">
+				<?php 
+				foreach ($home_page_settings['sections_settings'] as $sections_s) {
+					echo '<div class="drophere section-order">';
+						echo $sections[$sections_s];
+					echo '</div>';
+				}
+				?>
+			</div>
 		</div>
 		<div class="product-settings">
-		  	<h3>Product Display per row</h3>
-		  	<input type="number" name="product_display" id="product_display" value="<?php echo $home_page_settings['product_display']; ?>">
+		  	<div class="setting-label"><h3>Product Display per row</h3></div>
+		  	<div class="setting-data">
+		  		<input type="number" name="product_display" min="1" id="product_display" value="<?php echo $home_page_settings['product_display']; ?>">
+		  	</div>
 		</div>
 		<div class="simple-text-1-settings">
-			<h3>Simple Text 1</h3>
-			<textarea class="simple-text" name="simple_text_1" id="simple_text_1"><?php echo $home_page_settings['simple_text_1']; ?></textarea>
+			<div class="setting-label"><h3>Simple Text 1</h3></div>
+			<div class="setting-data">
+				<textarea class="simple-text" name="simple_text_1" id="simple_text_1"><?php echo $home_page_settings['simple_text_1']; ?></textarea>
+			</div>
 		</div>
 		<div class="simple-text-1-settings">
-			<h3>Simple Text 2</h3>
-			<textarea class="simple-text" name="simple_text_2" id="simple_text_2"><?php echo $home_page_settings['simple_text_2']; ?></textarea>
+			<div class="setting-label"><h3>Simple Text 2</h3></div>
+			<div class="setting-data">
+				<textarea class="simple-text" name="simple_text_2" id="simple_text_2"><?php echo $home_page_settings['simple_text_2']; ?></textarea>
+			</div>
 		</div>
-		<input type="hidden" id="ajaxurl" value="<?php echo admin_url( 'admin-ajax.php' ); ?>">
-		<a href="javascript:;" id="save_settings">Save</a>
+		<div class="save-btn">
+			<input type="hidden" id="ajaxurl" value="<?php echo admin_url( 'admin-ajax.php' ); ?>">
+			<a href="javascript:;" id="save_settings">Save</a>
+		</div>
 	</div>
 	<?php
 }
@@ -162,3 +173,58 @@ function save_home_page_settings_func() {
 	}
 	exit;
 }
+
+//Shortcode for Offset Products
+function products_offset_func( $atts ) {
+$atts = shortcode_atts( array(
+    'per_page' => '12',
+    'columns'  => '4',
+    'orderby'  => 'date',
+    'order'    => 'asc',
+    'offset'   => 0,
+    'category' => '', // Slugs
+    'operator' => 'IN' // Possible values are 'IN', 'NOT IN', 'AND'.
+), (array) $atts );
+
+ob_start();
+$query_args = array(
+    'columns'           => $atts['columns'],
+    'posts_per_page'    => $atts['per_page'],
+    'orderby'           => $atts['orderby'],
+    'order'             => $atts['order'],
+    'offset'            => $atts['offset'],
+    'no_found_rows'     => 1,
+    'post_status'       => 'publish',
+    'post_type'         => 'product',
+    'meta_query'        => WC()->query->get_meta_query(),
+);
+
+if( ! empty( $atts['category'] ) ) {
+    $query_args['tax_query'] = array(
+		array(
+		    'taxonomy' => 'product_cat',
+		    'field'    => 'slug',
+		    'terms'    => trim( $atts['category'] ),
+		    'operator' => $atts['operator']
+		),
+	);
+}
+?>
+<ul class="products">
+    <?php
+        $loop = new WP_Query( $query_args );
+        if ( $loop->have_posts() ) {
+            while ( $loop->have_posts() ) : $loop->the_post();
+                wc_get_template_part( 'content', 'product' );
+            endwhile;
+        }
+        wp_reset_postdata();
+    ?>
+</ul><!--/.products-->
+<?php
+
+return '<div class="woocommerce columns-' . $columns . '">' . ob_get_clean() . '</div>';
+
+}
+
+add_shortcode( 'products_offset', 'products_offset_func' );
